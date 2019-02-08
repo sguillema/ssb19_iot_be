@@ -1,0 +1,24 @@
+{
+  "name": "ssb19_iot_be",
+  "version": "1.0.0",
+  "description": "MQTT broker in NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sguillema/ssb19_iot_be.git"
+  },
+  "author": "Sebastian Guillema <sguillema@hotmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sguillema/ssb19_iot_be/issues"
+  },
+  "homepage": "https://github.com/sguillema/ssb19_iot_be#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mosca": "^2.8.3",
+    "mqtt": "^2.18.8"
+  }
+}

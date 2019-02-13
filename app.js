@@ -32,14 +32,21 @@ server.on('published', function(packet, client) {
   // console.log('Published', packet.payload.toString());
   console.log('Published', packet.payload)
   if (packet.payload) {
+    let payload = packet.payload.toString()
     /** Create our object that will be stored in our DB */
     let entry = new SensorReading({
-      deviceId: '0',
-      topic: 'a',
-      timestamp: new Date(),
-      sensorId: 'a',
-      sensorType: 'a',
-      sensorReading: 000
+      deviceId: payload.slice(0),
+      topic: payload.slice(1),
+      timestamp: new Date(), // payload.slice(2, 5)
+      sensorId: payload.slice(6),
+      sensorType: payload.slice(7),
+      sensorReading: Number(payload.slice(8, 10))
+      // deviceId: '0',
+      // topic: 'a',
+      // timestamp: new Date(),
+      // sensorId: 'a',
+      // sensorType: 'a',
+      // sensorReading: 000
     })
     /** Write our object as a document in the DB */
     SensorReading(entry).save().then(res => {

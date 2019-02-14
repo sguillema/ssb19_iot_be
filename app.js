@@ -51,9 +51,13 @@ app.get('/reset', (req, res) => {
   try {
     server.close()
     main()
-    res.send('Restarting MQTT Broker \n')
+    res.send({
+      msg: 'Restarting MQTT Broker \n'
+    })
   } catch(err) {
-    res.send('Failed to start MQTT Broker. Reason: '+err)
+    res.send({
+      msg: 'Failed to start MQTT Broker. Reason: '+err
+    })
   }
 })
 

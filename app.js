@@ -24,7 +24,7 @@ let settings = {
   backend: ascoltatore
 }
 
-let server = new mosca.Server(settings)
+let server // This is our mosca server variable
 
 /** Classic endpoint :) */
 app.get('/', (req, res) => res.send('Hello World!'))
@@ -57,9 +57,16 @@ app.get('/reset', (req, res) => {
   }
 })
 
-app.listen(port, () => console.log(`Server listening on ${port}!`))
+app.listen(port, () => {
+  console.log(`Server listening on ${port}!`)
+  main()
+  console.log(`Mosca MQTT broker running on ${settings.port}`)
+})
 
-function main() {  
+function main() { 
+  console.log(`Starting Mosca server...`)
+  server = new mosca.Server(settings)
+  
   server.on('clientConnected', function(client) {
       console.log('client connected', client.id)
   })

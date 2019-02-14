@@ -33,13 +33,13 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.get('/status', (req, res) => {
   let tempApp = express().listen(settings.port, () => {
     res.send({
-      val: true,
+      val: false,
       msg: 'Broker is NOT running. You may restart it by doing a GET request to \'/reset\'\n'
     })
     tempApp.close()
   }).on('error', (err) => {
     res.send({
-      val: false,
+      val: true,
       msg: 'Broker is up and running! You may restart it by doing a GET request to \'/reset\'\n'
     })
     tempApp.close()

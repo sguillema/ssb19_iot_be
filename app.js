@@ -100,6 +100,7 @@ function main() {
     if (packet.payload && Buffer.isBuffer(packet.payload)) {
 
       let payload = packet.payload.toString()
+      // console.log(`Payload ${payload}`)
       let entry
       switch (payload[0]) {
         case messageType.sensorReading : {
@@ -124,7 +125,8 @@ function main() {
 
           /** Write our object as a document in the DB */
           SensorReading(entry).save().then(res => {
-            console.log('Sensor Reading entry written to DB')
+            console.log(`Sensor Reading entry written to DB -- Payload ${payload}`)
+            break
           })
         }
 
@@ -140,7 +142,8 @@ function main() {
 
           /** Write our object as a document in the DB */
           ControlSignal(entry).save().then(res => {
-            console.log('Control Signal entry written to DB')
+            console.log(`Control Signal entry written to DB -- Payload ${payload}`)
+            break
           })
         }
 

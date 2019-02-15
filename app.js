@@ -5,10 +5,18 @@ const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
 const port = 3000
+const messageType = {
+  sensorReading: '0',
+  controlSignal: '1'  
+}
+const signalType = {
+
+}
 
 /** Mongoose initiatlisation */
 mongoose.connect(config.db)
 const SensorReading = mongoose.model('SensorReading', schemas.sensorReading)
+const ControlSignal = mongoose.model('ControlSignal', schemas.controlSignal)
 
 /** Mosca */
 let ascoltatore = {
@@ -78,28 +86,56 @@ function main() {
   // fired when a message is received
   server.on('published', function(packet, client) {
     // console.log('Published', packet.payload.toString());
-    console.log('Published', packet.payload)
-    if (packet.payload) {
+    // console.log('Published', packet.payload, typeof(packet.payload), Buffer.isBuffer(packet.payload))
+    if (packet.payload && Buffer.isBuffer(packet.payload)) {
+
       let payload = packet.payload.toString()
-      /** Create our object that will be stored in our DB */
-      let entry = new SensorReading({
-        deviceId: payload[0],
-        topic: payload[1],
-        timestamp: new Date(), // payload.slice(2, 6)
-        sensorId: payload[6],
-        sensorType: payload[7],
-        sensorReading: Number(payload.slice(8, 11))
-        // deviceId: '0',
-        // topic: 'a',
-        // timestamp: new Date(),
-        // sensorId: 'a',
-        // sensorType: 'a',
-        // sensorReading: 000
-      })
-      /** Write our object as a document in the DB */
-      SensorReading(entry).save().then(res => {
-        console.log('Entry written to DB')
-      })
+      let entry
+      switch (payload[0]) {
+        case messageType.sensorReading : {
+          /** Create our object that will be stored in our DB */
+          entry = new SensorReading({
+            messageType: payload[0],
+            deviceId: payload[1],
+            topic: payload[2],
+            timestamp: new Date(), // payload.slice(3, 7)
+            sensorId: payload[7],
+            sensorType: payload[8],
+            sensorReading: Number(payload.slice(9, 12))
+            // deviceId: '0',
+            // topic: 'a',
+            // timestamp: new Date(),
+            // sensorId: 'a',
+            // sensorType: 'a',
+            // sensorReading: 000
+          })
+
+          /** Write our object as a document in the DB */
+          SensorReading(entry).save().then(res => {
+            console.log('Sensor Reading entry written to DB')
+          })
+        }
+
+        case messageType.controlSignal : {
+          /** Create our object that will be stored in our DB */
+          entry = new ControlSignal({
+            messageType: payload[0],
+            deviceId: payload[1],
+            topic: payload[2],
+            timestamp: new Date(), // payload.slice(3, 7)
+            signal: payload[7]
+          })
+
+          /** Write our object as a document in the DB */
+          ControlSignal(entry).save().then(res => {
+            console.log('Control Signal entry written to DB')
+          })
+        }
+
+        default : {
+          console.log(`Unknown payload ${packet.payload}`)
+        }
+      }
     }
   })
   

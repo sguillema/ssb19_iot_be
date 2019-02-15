@@ -126,8 +126,8 @@ function main() {
           /** Write our object as a document in the DB */
           SensorReading(entry).save().then(res => {
             console.log(`Sensor Reading entry written to DB -- Payload ${payload}`)
-            break
           })
+          break
         }
 
         case messageType.controlSignal : {
@@ -143,8 +143,8 @@ function main() {
           /** Write our object as a document in the DB */
           ControlSignal(entry).save().then(res => {
             console.log(`Control Signal entry written to DB -- Payload ${payload}`)
-            break
           })
+          break
         }
 
         default : {

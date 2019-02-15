@@ -5,12 +5,22 @@ const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
 const port = 3000
+const sensorType = {
+  temperature1dec: 'A'
+}
 const messageType = {
   sensorReading: '0',
   controlSignal: '1'  
 }
 const signalType = {
-
+  off: '0',
+  on: '1',
+  reset: '2',
+  sleep: '3',
+  wake: '4',
+  high: '5',
+  medium: '6',
+  low: '7'
 }
 
 /** Mongoose initiatlisation */
@@ -94,6 +104,14 @@ function main() {
       switch (payload[0]) {
         case messageType.sensorReading : {
           /** Create our object that will be stored in our DB */
+          let formattedReading = Number(payload.slice(9, 12))
+
+          switch (payload[8]) {
+            case sensorType.temperature1dec : {
+              formattedReading = parseFloat(formattedReading.toString().slice(0,2)+'.'+formattedReading.toString().slice(2))
+            }
+          }
+
           entry = new SensorReading({
             messageType: payload[0],
             deviceId: payload[1],
@@ -101,13 +119,7 @@ function main() {
             timestamp: new Date(), // payload.slice(3, 7)
             sensorId: payload[7],
             sensorType: payload[8],
-            sensorReading: Number(payload.slice(9, 12))
-            // deviceId: '0',
-            // topic: 'a',
-            // timestamp: new Date(),
-            // sensorId: 'a',
-            // sensorType: 'a',
-            // sensorReading: 000
+            sensorReading: formattedReading
           })
 
           /** Write our object as a document in the DB */
